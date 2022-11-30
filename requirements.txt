@@ -1,3 +1,3 @@
 pandas
 from Bio.SeqUtils import MeltingTemp 
-from Bio.Seq import 
+from Bio.Seq import Seq
