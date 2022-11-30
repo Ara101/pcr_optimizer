@@ -2,7 +2,6 @@
 # Fall 2022
 
 class pcr(object): 
-  
   def __init__ (self, gene, forward_primer, reverse_primer, template_type = "plasmid", enzymes = [], factor = "cost"): 
     self.sequence = gene
     self.length = len(gene)
@@ -10,7 +9,6 @@ class pcr(object):
     self.template_type = template_type
     self.fp = forward_primer
     self.rp = reverse_primer
-
   def countDNAbase(gene): 
     """
     Counts the number of each DNA base present in a sequence
@@ -39,7 +37,7 @@ class pcr(object):
       if char == "t": 
         t_count += 1
     gc_content = 100*(g_count + c_count)/(g_count + c_count + a_count + t_count)
-    return "The GC Content is",gc_content, "%"
+    return "The GC Content is {}".format(gc_content), gc_content
 
   def checkPrimerGeneCompatability(gene, forward_primer, reverse_primer, startr = 0, stopr = 0 , startf = 0, stopf = 0): 
     """
@@ -129,3 +127,172 @@ class pcr(object):
       return ("Reverse Primer and gene are incompatible")
     else:
       return ("Primers and Gene are compatible")
+
+  def iProofAnalyzer (pcr): 
+    """
+    Acquires iProof DNA Polymerase Results 
+    Based on protocol from iProof: "https://www.bio-rad.com/webroot/web/pdf/lsr/literature/10002298B.pdf"
+
+    Parameters: 
+    ----------
+    a pcr object (contains gene seq, f primer, and r primer)
+
+    Returns: 
+    ----------
+    enzyme_df : DataFrame
+      enzyme volume 
+      enzyme cost
+    stats : DataFrame 
+      Annealing temperature
+      Annealing time 
+      Extension time 
+      Total PCR reaction time
+
+    """
+    #Gene length and elongation time
+    #For iProof, extension time depends on the type of template DNA 
+    #Protocol recommends 15 sec per kb if plasmid, and 30 sec per kb if genomic
+    from Bio.SeqUtils import MeltingTemp as mt
+    from Bio.Seq import Seq
+    import pandas as pd
+
+    gene_length = len(pcr.sequence)
+    if pcr.template_type == "plasmid" or pcr.template_type == "lambda" or pcr.template_type == "BAC DNA": 
+      extension_time_seconds = (gene_length/1000)*15
+      extension_time_minutes = extension_time_seconds/60 
+    elif pcr.template_type == "genomic": 
+      extension_time_seconds = round((gene_length/1000)*30, 2)
+      extension_time_minutes = round(extension_time_seconds/60, 2)
+
+    #iProof Enzyme 
+    #iProof can range from 0.5-2 units per 50mL 
+    #Chose the 4 most common PCR volumes. With a higher volume you get more PCR product 
+    
+    enzyme_dict = {"20 uL": [], "20 uL Cost" : [], "50 uL": [], "50 uL Cost" : [], "100 uL" : [], 
+                "100 uL Cost": [], "200 uL" : [], "200 uL Cost" : []} # Store cost for each volume
+    enzyme_cost = 1.53
+
+    for volume in [20,50,100,200]: 
+      enzyme_dict[str(volume) + " uL"].append(0.5*(volume/50)) 
+      enzyme_dict[str(volume) + " uL Cost"].append(0.5*(volume/50)*enzyme_cost)
+    enzyme_df = pd.DataFrame(enzyme_dict)
+    enzyme_df.index = ['Enzyme amount']
+    
+    #iProof Primer Annealing Temperature
+    annealing_temp_1 = mt.Tm_NN(Seq(pcr.fp))
+    annealing_temp_2 = mt.Tm_NN(Seq(pcr.rp))
+    if len(pcr.fp) or len(pcr.fp) > 20: 
+      if annealing_temp_1 > annealing_temp_2: 
+        annealing_temp_final = round(annealing_temp_2 + 3, 2)
+      elif annealing_temp_1 < annealing_temp_2: 
+        annealing_temp_final = round(annealing_temp_1 +3, 2)
+
+    elif len(pcr.fp) or len(pcr.rp) <=20: 
+      if annealing_temp_1 > annealing_temp_2: 
+        annealing_temp_final = round(annealing_temp_2,2)
+      elif annealing_temp_1 < annealing_temp_2: 
+        annealing_temp_final = round(annealing_temp_1,2)
+    annealing_time_seconds = 30 #this is the same regardless of the input
+    annealing_time_minutes = 0.5 
+
+    total_pcr_time_minutes = round((30 + (10 + annealing_time_seconds + extension_time_seconds)*35 + 10*60)/60, 2)
+    total_pcr_time_hours = round (total_pcr_time_minutes/60, 2)
+    
+    factor = ['Annealing Temperature:','Annealing Time:','Extention Time:','Total PCR reaction time is:' ]
+    stats_data = {'Result': ["{} degrees Celcius".format(annealing_temp_final), "{} seconds or {} minutes".format(annealing_time_seconds, annealing_time_minutes), "{} seconds or {} minutes".format(extension_time_seconds, extension_time_minutes), "{} minutes or {} hours".format(total_pcr_time_minutes, total_pcr_time_hours)]}
+    stats = pd.DataFrame(data = stats_data, index = factor)
+
+    return enzyme_df, stats 
+    
+  def TaqAnalyzer (pcr): 
+    """
+    Acquires Taq DNA Polymerase Results 
+    Based on protocol from Taq: "https://www.neb.com/protocols/0001/01/01/taq-dna-polymerase-with-standard-taq-buffer-m0273"
+
+    Parameters: 
+    ----------
+    a pcr object (contains gene seq, f primer, and r primer)
+
+    Returns: 
+    ----------
+    enzyme_df : DataFrame
+      enzyme volume 
+      enzyme cost
+    stats : DataFrame 
+      Annealing temperature
+      Annealing time 
+      Extension time 
+      Total PCR reaction time
+
+    """
+    #Gene length and elongation time
+    #For iProof, extension time depends on the type of template DNA 
+    #Protocol recommends 15 sec per kb if plasmid, and 30 sec per kb if genomic
+    from Bio.SeqUtils import MeltingTemp as mt
+    from Bio.Seq import Seq
+    import pandas as pd
+
+    gene_length = len(pcr.sequence)
+    if pcr.template_type == "plasmid" or pcr.template_type == "lambda" or pcr.template_type == "BAC DNA": 
+      extension_time_seconds = (gene_length/1000)*15
+      extension_time_minutes = extension_time_seconds/60 
+    elif pcr.template_type == "genomic": 
+      extension_time_seconds = round((gene_length/1000)*30, 2)
+      extension_time_minutes = round(extension_time_seconds/60, 2)
+
+    #Taq DNA Polymerase Enzyme 
+    #Taq DNA Polymerase is 0.25 units per 50 
+    #Chose the 4 most common PCR volumes. With a higher volume you get more PCR product 
+    
+    enzyme_dict = {"20 uL": [], "20 uL Cost" : [], "50 uL": [], "50 uL Cost" : [], "100 uL" : [], 
+                "100 uL Cost": [], "200 uL" : [], "200 uL Cost" : []} # Store cost for each volume
+    enzyme_cost = 1.78 # dollar cost per reaction
+    
+
+    for volume in [20,50,100,200]: 
+      enzyme_dict[str(volume) + " uL"].append(0.25*(volume/50)) 
+      enzyme_dict[str(volume) + " uL Cost"].append(0.25*(volume/50)*enzyme_cost)
+    enzyme_df = pd.DataFrame(enzyme_dict)
+    enzyme_df.index = ['Enzyme amount']
+
+    #iProof Primer Annealing Temperature
+    annealing_temp_1 = mt.Tm_NN(Seq(pcr.fp))
+    annealing_temp_2 = mt.Tm_NN(Seq(pcr.rp))
+    if len(pcr.fp) or len(pcr.fp) > 20: 
+      if annealing_temp_1 > annealing_temp_2: 
+        annealing_temp_final = round(annealing_temp_2 + 3, 2)
+      elif annealing_temp_1 < annealing_temp_2: 
+        annealing_temp_final = round(annealing_temp_1 + 3, 2)
+
+    elif len(pcr.fp) or len(pcr.rp) <=20: 
+      if annealing_temp_1 > annealing_temp_2: 
+        annealing_temp_final = round(annealing_temp_2,2)
+      elif annealing_temp_1 < annealing_temp_2: 
+        annealing_temp_final = round(annealing_temp_1,2)
+    annealing_time_seconds = 60 
+    annealing_time_minutes = annealing_time_seconds/60 
+
+    # Time for each Processes in seconds
+    if countDNAbase(pcr.sequence)[1] < 65:
+      initial_Denaturation = 30 
+    else:
+      initial_Denaturation = 4*60
+
+    if annealing_temp_1 > 65 and annealing_temp_2 > 65:
+      cycles = 30
+    else:
+      cycles = 35
+
+    Denaturation = 30  
+    final_extension = 5 * 60 
+
+    # Total Time calculation
+    total_pcr_time_minutes = round((initial_Denaturation + (Denaturation + annealing_time_seconds + extension_time_seconds)*cycles + final_extension)/60, 2)
+    total_pcr_time_hours = round(total_pcr_time_minutes/60, 2)
+    
+    factor = ['Annealing Temperature:','Annealing Time:','Extention Time:','Total PCR reaction time is:' ]
+    stats_data = {'Result': ["{} degrees Celcius".format(annealing_temp_final), "{} seconds or {} minutes".format(annealing_time_seconds, annealing_time_minutes), "{} seconds or {} minutes".format(extension_time_seconds, extension_time_minutes), "{} minutes or {} hours".format(total_pcr_time_minutes, total_pcr_time_hours)]}
+    stats = pd.DataFrame(data = stats_data, index = factor)
+
+    return enzyme_df, stats 
+  
