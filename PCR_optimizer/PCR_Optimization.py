@@ -287,7 +287,7 @@ class pcr(object):
         annealing_time_minutes = annealing_time_seconds/60 
 
         # Time for each Processes in seconds
-        if test.countDNAbase()[1] < 65:
+        if self.countDNAbase()[1] < 65:
           initial_Denaturation = 30 
         else:
           initial_Denaturation = 4*60
