@@ -12,7 +12,7 @@ def doSetup(install_requires):
         author=' Lily Torp and K. Lionel Tukei ',
         author_email='ltorp3@uw.edu',
         url='https://github.com/Ara101/PCR_Optimization_class.git',
-        description='Enables intellisense for **kwargs',
+        description='A funtion PCR protocal optimizations',
         long_description=long_description,
         long_description_content_type='text/markdown',
         packages=['PCR_Optimization'],
