@@ -1,6 +1,11 @@
 # Authored Lily Torp, K. Lionel Tukei 
 # Fall 2022
 
+import pandas as pd
+from Bio.SeqUtils import MeltingTemp as mt
+from Bio.Seq import Seq
+from prettytable import PrettyTable as pt
+
 class pcr(object): 
     def __init__ (self, gene, forward_primer, reverse_primer, template_type = "plasmid"):
         """
