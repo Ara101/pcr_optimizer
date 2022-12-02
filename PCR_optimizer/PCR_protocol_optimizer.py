@@ -4,10 +4,14 @@
 class pcr(object): 
     def __init__ (self, gene, forward_primer, reverse_primer, template_type = "plasmid"):
         """
-        gene: target gene being amplified
-        forward_primer: primer used for forward reaction ***should only be portion of primer that overlaps to gene***
-        reverse_primer: primer used for reverse reaction ***should only be portion of primer that overlaps to gene***
-        template_type: type of DNA being amplified, either "plasmid" or "genomic
+        gene: str
+          target gene being amplified
+        forward_primer: str
+          primer used for forward reaction ***should only be portion of primer that overlaps to gene***
+        reverse_primer: str
+          primer used for reverse reaction ***should only be portion of primer that overlaps to gene***
+        template_type: str
+          type of DNA being amplified, either "plasmid", "lambda", "BAC DNA" or "genomic
 
         """
         self.sequence = gene
@@ -20,12 +24,17 @@ class pcr(object):
         """
         Parameters: 
         ----------
-        a pcr object (contains gene seq, f primer, and r primer)
+        a pcr object (contains gene/sequence, forward primer, and reverse primer)
+        startr: int
+        stopr: int
+        startf: int
+        stopf: int
 
         Returns: 
         ----------
-        statement with status of gene, forward primer, reverse primer, and primer compatability
+        A print statement with status of gene, forward primer, reverse primer, and primer compatability 
         good status indicates only atgc characters in gene/primers, and primers anneal at correct locations 
+
         """
 
         def check_gene(self): 
@@ -85,7 +94,8 @@ class pcr(object):
           
           Returns
           -------
-          A statment on primer compatibility : str
+          statment on primer compatibility : str
+
           """
           # Preparing inputs 
           gene = gene.lower()
@@ -166,12 +176,12 @@ class pcr(object):
 
         Parameters
         ----------
-        dna: input gene 
+        gene: str
 
         Returns
         ----------
-        The number of each base 
         GC content : str
+          The number of each base 
 
         """
         gene = self.sequence 
@@ -194,11 +204,13 @@ class pcr(object):
     def recommend(self): 
       """
       Parameters: 
-          ----------
-          a pcr object (contains gene seq, f primer, and r primer)
+      ----------
+      a pcr object 
+      (contains gene/sequence, forward primer, and reverse primer)
 
-          Returns: 
-          ----------
+      Returns: 
+      ----------
+      A table on the results of using different enzymes : PrettyTable
           
       """
 
@@ -209,7 +221,8 @@ class pcr(object):
 
           Parameters: 
           ----------
-          a pcr object (contains gene seq, f primer, and r primer)
+          pcr : object 
+            (contains gene/sequence, forward primer, and reverse primer)
 
           Returns: 
           ----------
