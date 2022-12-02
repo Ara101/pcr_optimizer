@@ -16,7 +16,7 @@ class pcr(object):
         self.rp = reverse_primer
         self.template_type = template_type
 
-    def check(self): 
+    def check(self, startr = 0, stopr = 0 , startf = 0, stopf = 0): 
         """
         Parameters: 
         ----------
@@ -67,7 +67,7 @@ class pcr(object):
             rp_results = "Unacceptable character in reverse primer. Check sequence"
           return rp_results
 
-        def checkPrimerGeneCompatability(gene, forward_primer, reverse_primer, startr = 0, stopr = 0 , startf = 0, stopf = 0): 
+        def checkPrimerGeneCompatability(gene, forward_primer, reverse_primer, startr = startr, stopr = stopr , startf = startf, stopf = stopf): 
           """
           Check the forward and reverse primer's compatibility to the gene/sequence.
           If the start positions are not at the begining on the gene you can enter the 
@@ -347,7 +347,7 @@ class pcr(object):
           annealing_time_minutes = annealing_time_seconds/60 
 
           # Time for each Processes in seconds
-          if test.countGCcontent()[1] < 65:
+          if self.countGCcontent()[1] < 65:
             initial_Denaturation = 30 
           else:
             initial_Denaturation = 4*60
@@ -391,4 +391,4 @@ class pcr(object):
         myTabel1.add_column('Result',enzyme[1].iloc[:,0].tolist())
         print(myTabel1)
 
-      return 
+      return "Analysis Complete"
