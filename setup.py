@@ -3,7 +3,8 @@ from setuptools import setup
 with open("README.md", "r") as fh:
     long_description = fh.read() 
 
-INSTALL_REQUIRES = []
+INSTALL_REQUIRES = ['pandas', 'logging',
+'MeltingTemp', 'Seq', 'PrettyTable']
 
 def doSetup(install_requires):
     setup(
