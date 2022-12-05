@@ -2,6 +2,7 @@
 # Fall 2022
 
 import pandas as pd
+import logging
 from Bio.SeqUtils import MeltingTemp as mt
 from Bio.Seq import Seq
 from prettytable import PrettyTable as pt
@@ -37,7 +38,7 @@ class pcr(object):
 
         Returns: 
         ----------
-        A print statement with status of gene, forward primer, reverse primer, and primer compatability 
+        A statement with status of gene, forward primer, reverse primer, and primer compatability 
         good status indicates only atgc characters in gene/primers, and primers anneal at correct locations 
 
         """
@@ -173,7 +174,11 @@ class pcr(object):
 
         results = [check_gene(self), check_fp(self), check_rp(self), checkPrimerGeneCompatability(self.sequence,self.fp,self.rp)]
 
-        return print(*results, sep = "\n")
+        logging.basicConfig(format='%(message)s', level=logging.INFO, force=True)
+        logger = logging.getLogger()
+
+        return logging.info(results[0]),logging.info(results[1]),logging.info(results[2]),logging.info(results[3])
+
       
     def countGCcontent(self): 
         """
@@ -205,8 +210,10 @@ class pcr(object):
           if char == "t": 
             t_count += 1
         gc_content = 100*(g_count + c_count)/(g_count + c_count + a_count + t_count)
+        logging.basicConfig(format='%(message)s', level=logging.INFO, force=True)
         return "The GC Content is {}".format(round(gc_content,2)), gc_content
-    def recommend(self): 
+        
+    def recommend(self, factor = "time"): 
       """
       Parameters: 
       ----------
@@ -394,19 +401,30 @@ class pcr(object):
 
       # Formating Output Enzyme Analyzer outputs
       enzymes = [iproof_result, taq_result]
-      for count, enzyme in enumerate(enzymes):
-        enzyme_dict = {"20 uL": [], "20 uL Cost" : [], "50 uL": [], "50 uL Cost" : [], "100 uL" : [], "100 uL Cost": [], "200 uL" : [], "200 uL Cost" : []}
-        myTable = pt(["Reaction Volume"] + list(enzyme_dict.keys()))
-        myTable.add_row(["enzyme amount/cost"] + list(enzyme[0].iloc[0]))
-        if count == 0:
-          print("IProof Analyzer")
-        elif count == 1:
-          print("Taq Analyzer")
-        print(myTable)
-        factor = ['Annealing Temperature:','Annealing Time:','Extention Time:','Total PCR reaction time is:' ]
-        myTabel1 = pt()
-        myTabel1.add_column('Factor',factor)
-        myTabel1.add_column('Result',enzyme[1].iloc[:,0].tolist())
-        print(myTabel1)
+      logging.basicConfig(format='%(message)s', level=logging.INFO, force=True)
 
+      if factor == "time":
+        for count, enzyme in enumerate(enzymes):
+          
+          if count == 0:
+            logging.info("IProof Analyzer")
+          elif count == 1:
+            logging.info("Taq Analyzer")
+
+          factor = ['Annealing Temperature:','Annealing Time:','Extention Time:','Total PCR reaction time is:' ]
+          myTabel1 = pt()
+          myTabel1.add_column('Factor',factor)
+          myTabel1.add_column('Result',enzyme[1].iloc[:,0].tolist())
+          logging.info(myTabel1)
+      elif factor == "cost":
+        for count, enzyme in enumerate(enzymes):
+          enzyme_dict = {"20 uL": [], "20 uL Cost" : [], "50 uL": [], "50 uL Cost" : [], "100 uL" : [], "100 uL Cost": [], "200 uL" : [], "200 uL Cost" : []}
+          myTable = pt(["Reaction Volume"] + list(enzyme_dict.keys()))
+          myTable.add_row(["enzyme amount/cost"] + list(enzyme[0].iloc[0]))
+          if count == 0:
+            logging.info("IProof Analyzer")
+          elif count == 1:
+            logging.info("Taq Analyzer")
+          logging.info(myTable)
+   
       return "Analysis Complete"

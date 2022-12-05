@@ -7,7 +7,7 @@ import unittest
 from PCR_protocol_optimizer import pcr
 
 
-class TestPCR_protocol_optimizer(unittest.TestCase):
+class Testpcr(unittest.TestCase):
 
     def setUp(self):
         # Annealing positions are standard
@@ -41,19 +41,18 @@ class TestPCR_protocol_optimizer(unittest.TestCase):
         result = self.entry.check()
         result0 = self.entry0.check(startr = 10, stopr = 31 , startf = 79, stopf = 60)
         result1 = self.entry1.check()
-        positive_result = ["Gene looks good!","Forward primer looks good!","Reverse primer looks good!","Primers and Gene are compatible!"]
-        negative_result = ["Gene looks good!","Unacceptable character in forward primer. Check sequence","Reverse primer looks good!","Both Primers and gene are incompatible. Check annealing location for both primers"]
-
-        self.assertIsNone(result)
-        self.assertEqual(result,print(*positive_result, sep = "\n")) 
-        self.assertEqual(result0,print(*positive_result, sep = "\n"))
-        self.assertEqual(result1,print(*negative_result, sep = "\n"))
+        self.assertIsInstance(result,tuple)
+        self.assertEqual(result,(None, None, None, None)) 
+        self.assertEqual(result0,(None, None, None, None))
+        self.assertEqual(result1,(None, None, None, None))
 
     def test_recommend(self):
-        result = self.entry.recommend()
+        result = self.entry.recommend(factor="time")
+        result0 = self.entry.recommend(factor="cost")
         self.assertIsNotNone(result)
         self.assertIsInstance(result,str)
-
+        self.assertIsNotNone(result0)
+        self.assertIsInstance(result0,str)
 
 if __name__ == '__main__':
     unittest.main()
