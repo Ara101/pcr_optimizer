@@ -47,12 +47,13 @@ class Testpcr(unittest.TestCase):
         self.assertEqual(result1,(None, None, None, None))
 
     def test_recommend(self):
-        result = self.entry.recommend(factor="time")
         result0 = self.entry.recommend(factor="cost")
+        result = self.entry.recommend(factor="time")
+        self.assertEqual(len(self.entry.recommend()),17)
         self.assertIsNotNone(result)
         self.assertIsInstance(result,str)
         self.assertIsNotNone(result0)
         self.assertIsInstance(result0,str)
-
+        
 if __name__ == '__main__':
     unittest.main()
