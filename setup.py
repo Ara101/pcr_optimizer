@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read() 
 
 INSTALL_REQUIRES = ['pandas', 'logging',
-'MeltingTemp', 'Seq', 'PrettyTable']
+'Bio.SeqUtils', 'Bio.Seq', 'prettytable ']
 
 def doSetup(install_requires):
     setup(
