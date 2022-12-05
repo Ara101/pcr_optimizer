@@ -21,6 +21,15 @@ def doSetup(install_requires):
             'PCR_protocol_optimizer'},
         install_requires=install_requires,
         include_package_data=True,
+        classifiers=[
+            'Development Status :: 3 - Alpha',  
+            'Intended Audience :: Life Science Researchers',     
+            'Topic :: Life Science Research :: Protocol Aiding Tools',
+            'License :: OSI Approved :: MIT License', 
+            'Programming Language :: Python :: 3.9',
+            'Programming Language :: Python :: 3.10',
+            'Programming Language :: Python :: 3.11',
+        ],
     )
 
 if __name__ == '__main__':
