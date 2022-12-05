@@ -10,8 +10,8 @@ def doSetup(install_requires):
     setup(
         name='PCR_protocol_optimizer',
         version='0.1',
-        author=' Lily Torp and K. Lionel Tukei ',
-        author_email='ltorp3@uw.edu and ltukei@uw.edu',
+        author=' Lily Torp, K. Lionel Tukei ',
+        author_email='ltorp3@uw.edu, ltukei@uw.edu',
         url='https://github.com/Ara101/PCR_Optimization_class.git',
         description='A funtion PCR protocal optimizations',
         long_description=long_description,
