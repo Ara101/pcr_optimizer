@@ -1,5 +1,0 @@
-pandas
-logging
-Bio.SeqUtils
-Bio.Seq
-prettytable
