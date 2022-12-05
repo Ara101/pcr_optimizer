@@ -23,8 +23,8 @@ def doSetup(install_requires):
         include_package_data=True,
         classifiers=[
             'Development Status :: 3 - Alpha',  
-            'Intended Audience :: Life Science Researchers',     
-            'Topic :: Life Science Research :: Protocol Aiding Tools',
+            'Intended Audience :: Science/Research',
+            'Topic :: Scientific/Engineering',
             'License :: OSI Approved :: MIT License', 
             'Programming Language :: Python :: 3.9',
             'Programming Language :: Python :: 3.10',
