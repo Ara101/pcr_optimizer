@@ -7,7 +7,7 @@ INSTALL_REQUIRES = []
 
 def doSetup(install_requires):
     setup(
-        name='PCR_protocol_optimizer',
+        name='pcr_optimizer',
         version='0.1',
         author=' Lily Torp, K. Lionel Tukei ',
         author_email='ltorp3@uw.edu, ltukei@uw.edu',
@@ -15,9 +15,9 @@ def doSetup(install_requires):
         description='A funtion PCR protocal optimizations',
         long_description=long_description,
         long_description_content_type='text/markdown',
-        packages=['PCR_protocol_optimizer'],
-        package_dir={'PCR_protocol_optimizer':
-            'PCR_pro_optimizer'},
+        packages=['pcr_optimizer'],
+        package_dir={'pcr_optimizer':
+            'pcr_optimizer'},
         install_requires=install_requires,
         include_package_data=True,
         classifiers=[
