@@ -1,0 +1,9 @@
+LICENSE
+README.md
+setup.py
+pcr_optimizer/__init__.py
+pcr_optimizer/pcrprotocoloptimizer.py
+pcr_optimizer.egg-info/PKG-INFO
+pcr_optimizer.egg-info/SOURCES.txt
+pcr_optimizer.egg-info/dependency_links.txt
+pcr_optimizer.egg-info/top_level.txt
