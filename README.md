@@ -7,9 +7,77 @@ This tool optimizes the PCR protocol decision making process. First the gene and
 
 ## Setup 
 
-```pip install pcr_protocol_optimizer```
+```
+pip install pcr_protocol_optimizer
+pip install biopython
+```
 
 ## Defining PCR object 
 
-```test = PCR(gene, forward_primer, reverse_primer)```
+The gene, forward primer, and reverse primer sequences are entered as strings in 5’-3’ format. Template type must also be defined (plasmid, lambda, BAC DNA, or genomic), or will be assigned "plasmid" by default.  
 
+Example: 
+
+``` 
+gene = “atggagacagacacactcctgctatgggtactgctgctctgggttccaggttccactggtgacacaagtttgtacaaaaaagttggcaccaagtcgatcctagatggccttgcagataccaccttccgcaccatcaccactgacctcctgtacgtgggctcaaatgacattcagtacgaagacatcaaaggtgacatggcatccaaattagggtacttcccacagaaattccctttaacttcctttaggggaagtcccttccaagagaagatgactgcgggagacaacccccagctagtcccagcagaccaggtgaacattacagaattttacaacaagtctctctcgtccttcaaggagaatgaggagaacatccagtgtggggagaacttcatggacatagagtgtttcatggtcctgaaccccagccagcagctggccattgcagtcctgtccctcacgctgggcaccttcacggtcctggagaacctcctggtgctgtgcgtcatcctccactcccgcagcctccgctgcaggccttcctaccacttcatcggcagcctggcggtggcagacctcctggggagtgtcatttttgtctacagcttcattgacttccacgtgttccaccgcaaagatagccgcaacgtgtttctgttcaaactgggtggggtcacggcctccttcactgcctccgtgggcagcctgttcctcacagccatcgacaggtacatatccattcacaggcccctggcctataagaggattgtcaccaggcccaaggccgtggtggcgttttgcctgatgtggaccatagccattgtgatcgccgtgctgcctctcctgggctggaactgcgagaaactgcaatctgtttgctcagacattttcccacacattgatgaaacctacctgatgttctggatcggggtcaccagcgtactgcttctgttcatcgtgtatgcgtacatgtatattctctggaaggctcacagccacgccgtccgcatgattcagcgtaccgacgcgctggacctggaggagggaggaaacgtctatatcaaggccgacaagcagaagaacggcatcaaggcgaacttctgcatccgccacaacatcgaggacggcggcgtgcagctcgcctaccactaccagcagaacacccccatcggcgacggccccgtgctgctgcccgacaaccactacctgagcgtgcagtccaaactttcgaaagaccccaacgagaagcgcgatcacatggtcctgctggagttcgtgaccgccgccgggatcactttcggcatggacgagctgtacaagggcggtaccggagggagcatggtgagaaagggcgaggagctgttcaccggggtggtgcccatcctggtcgagctggacggcgacgtaaacggccacaagttcagcgtgggcggcgagggtgagggcgatgccaccgttggcaagctgaccctgaagttcatctgcaccaccggcaagctgcccgtgccctggcccaccctcgtgaccaccctgacctacggcgtgcagtgcttcagccgctaccccgaccacatgaagcagcacgacttcttcaagtccgccatgcccgaaggctacatccaggagcgcaccatcttcttcaaggacgacggcaactacaagacccgcgccgaggtgaagttcgagggcgacaccctggtgaaccgcatcgagctgaagggcatcgacttcaaggaggacggcaacatcctggggcacaagctggagtacaacaccggagcagcagcacgctggcgcgggcggcgcatggacattaggttagccaagaccctggtcctgatcctggtggtgttgatcatctgctggggccctctgcttgcaatcatggtgtatgatgtctttgggaagatgaacaagctcattaagacggtgtttgcattctgcaccatgctctgcctgctgaactccaccgtgaaccccatcatctatgctctgaggagtaaggacctgcgacacgctttccggagcatgtttccctcttgtgaaggcactgcgcagcctctggataacagcatgggggactcggactgcctgcacaaacacgcaaacaatgcagccagtgttcacagggccgcagaaagctgcatcaagagcacggtcaagattgccaaggtaaccatgtctgtgtccacagacacgtctgccgaggctctg"
+forward_primer = "atggagacagacacactcctgctatgg"
+reverse_primer = "cagagcctcggcagacgtgt"
+
+my_pcr = pcr(gene, forward_primer, reverse_primer, template_type = "plasmid")
+```
+## Checking PCR object for errors: 
+
+The check() function will check the gene and primer sequences for non-base charactrs (anything not A/T/G/C) and ensure primers are binding in the correct location. 
+
+```
+my_pcr.check()
+```
+Any errors will be reported and the user will manually fix them. 
+
+## Optimzing PCR for cost or time: 
+
+The recommend() function will optimize pcr for a user-defined factor (either "time" or "cost") and return a table of outputs. 
+
+Optimizing for cost: 
+```
+my_pcr.recommend(factor = "cost")
+```
+```IProof Analyzer
++--------------------+-------+------------+-------+------------+--------+-------------+--------+-------------+
+|  Reaction Volume   | 20 uL | 20 uL Cost | 50 uL | 50 uL Cost | 100 uL | 100 uL Cost | 200 uL | 200 uL Cost |
++--------------------+-------+------------+-------+------------+--------+-------------+--------+-------------+
+| enzyme amount/cost |  0.2  |    0.31    |  0.5  |    0.77    |  1.0   |     1.53    |  2.0   |     3.06    |
++--------------------+-------+------------+-------+------------+--------+-------------+--------+-------------+
+Taq Analyzer
++--------------------+-------+------------+-------+------------+--------+-------------+--------+-------------+
+|  Reaction Volume   | 20 uL | 20 uL Cost | 50 uL | 50 uL Cost | 100 uL | 100 uL Cost | 200 uL | 200 uL Cost |
++--------------------+-------+------------+-------+------------+--------+-------------+--------+-------------+
+| enzyme amount/cost |  0.1  |    0.18    |  0.25 |    0.45    |  0.5   |     0.89    |  1.0   |     1.78    |
++--------------------+-------+------------+-------+------------+--------+-------------+--------+-------------+
+```
+
+Optimizing for time: 
+```
+my_pcr.recommend(factor = "time")
+```
+```
+IProof Analyzer
++-----------------------------+------------------------------+
+|       Reaction Factor       |            Result            |
++-----------------------------+------------------------------+
+|    Annealing Temperature:   |    56.72 degrees Celcius     |
+|       Annealing Time:       |  30 seconds or 0.5 minutes   |
+|       Extention Time:       | 1.5 seconds or 0.025 minutes |
+| Total PCR reaction time is: | 34.71 minutes or 0.58 hours  |
++-----------------------------+------------------------------+
+Taq Analyzer
++-----------------------------+------------------------------+
+|       Reaction Factor       |            Result            |
++-----------------------------+------------------------------+
+|    Annealing Temperature:   |    56.72 degrees Celcius     |
+|       Annealing Time:       |  60 seconds or 1.0 minutes   |
+|       Extention Time:       | 1.5 seconds or 0.025 minutes |
+| Total PCR reaction time is: | 58.88 minutes or 0.98 hours  |
++-----------------------------+------------------------------+
+````
+If the user does not define a factor, then both tables will be returned for both enzymes. 
