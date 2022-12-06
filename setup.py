@@ -18,7 +18,7 @@ def doSetup(install_requires):
         long_description_content_type='text/markdown',
         packages=['PCR_protocol_optimizer'],
         package_dir={'PCR_protocol_optimizer':
-            'PCR_protocol_optimizer'},
+            'PCR_pro_optimizer'},
         install_requires=install_requires,
         include_package_data=True,
         classifiers=[

@@ -4,7 +4,7 @@ Authors: Lily Torp, K. Lionel Tukei
 """
 
 import unittest 
-from pcrprotocoloptimizer import pcr
+from pcr_optimizer.pcrprotocoloptimizer import pcr
 
 
 class Testpcr(unittest.TestCase):
