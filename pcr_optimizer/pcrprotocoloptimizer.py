@@ -175,7 +175,7 @@ class pcr(object):
         results = [check_gene(self), check_fp(self), check_rp(self), checkPrimerGeneCompatability(self.sequence,self.fp,self.rp)]
         logging.basicConfig(format='%(message)s', level=logging.INFO, force=True)
 
-        return logging.info(results[0]),logging.info(results[1]),logging.info(results[2]),logging.info(results[3])
+        return logging.info("{} \n{} \n{} \n{}".format(results[0], results[1], results[2], results[3]))
 
     def countGCcontent(self): 
         """
