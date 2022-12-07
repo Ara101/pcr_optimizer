@@ -1,5 +1,5 @@
 """
-Created Fall 2022
+Created in Fall 2022
 Authors: Lily Torp, K. Lionel Tukei
 """
 
