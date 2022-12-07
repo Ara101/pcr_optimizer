@@ -207,7 +207,6 @@ class pcr(object):
           if char == "t": 
             t_count += 1
         gc_content = 100*(g_count + c_count)/(g_count + c_count + a_count + t_count)
-        logging.basicConfig(format='%(message)s', level=logging.INFO, force=True)
         return "The GC Content is {}".format(round(gc_content,2)), gc_content
         
     def recommend(self, factor = None): 
