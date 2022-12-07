@@ -2,11 +2,9 @@
 Created Fall 2022
 Authors: Lily Torp, K. Lionel Tukei
 """
-import sys
-sys.path.append('Users\lione\Desktop\GitHub\PCR_Optimization_class\pcr_optimizer')
 
 import unittest 
-from pcr_optimizer.pcrprotocoloptimizer import pcr
+from pcrprotocoloptimizer import pcr
 
 
 class Testpcr(unittest.TestCase):

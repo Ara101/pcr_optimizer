@@ -34,6 +34,6 @@ jobs:
 
     - name: test
       env:
-        PYTHONPATH: .
+        PYTHONPATH:
       run: python tests/test_pcrprotocoloptimizer.py
 
