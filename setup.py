@@ -8,11 +8,11 @@ INSTALL_REQUIRES = []
 def doSetup(install_requires):
     setup(
         name='pcr_optimizer',
-        version='0.1',
+        version='0.12',
         author=' Lily Torp, K. Lionel Tukei ',
         author_email='ltorp3@uw.edu, ltukei@uw.edu',
         url='https://github.com/Ara101/PCR_Optimization_class.git',
-        description='A funtion PCR protocal optimizations',
+        description='A function for PCR protocal optimization',
         long_description=long_description,
         long_description_content_type='text/markdown',
         packages=['pcr_optimizer'],
