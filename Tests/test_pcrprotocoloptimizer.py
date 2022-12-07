@@ -8,7 +8,7 @@ from pcr_optimizer.pcrprotocoloptimizer import pcr
 
 
 class Testpcr(unittest.TestCase):
-
+    
     def setUp(self):
         # Annealing positions are standard
         gene = "atggagacagacacactcctgctatgggtactgctgctctgggttccaggttccactggtgacacaagtttgtacaaaaaagttggcaccaagtcgatcctagatggccttgcagataccaccttccgcaccatcaccactgacctcctgtacgtgggctcaaatgacattcagtacgaagacatcaaaggtgacatggcatccaaattagggtacttcccacagaaattccctttaacttcctttaggggaagtcccttccaagagaagatgactgcgggagacaacccccagctagtcccagcagaccaggtgaacattacagaattttacaacaagtctctctcgtccttcaaggagaatgaggagaacatccagtgtggggagaacttcatggacatagagtgtttcatggtcctgaaccccagccagcagctggccattgcagtcctgtccctcacgctgggcaccttcacggtcctggagaacctcctggtgctgtgcgtcatcctccactcccgcagcctccgctgcaggccttcctaccacttcatcggcagcctggcggtggcagacctcctggggagtgtcatttttgtctacagcttcattgacttccacgtgttccaccgcaaagatagccgcaacgtgtttctgttcaaactgggtggggtcacggcctccttcactgcctccgtgggcagcctgttcctcacagccatcgacaggtacatatccattcacaggcccctggcctataagaggattgtcaccaggcccaaggccgtggtggcgttttgcctgatgtggaccatagccattgtgatcgccgtgctgcctctcctgggctggaactgcgagaaactgcaatctgtttgctcagacattttcccacacattgatgaaacctacctgatgttctggatcggggtcaccagcgtactgcttctgttcatcgtgtatgcgtacatgtatattctctggaaggctcacagccacgccgtccgcatgattcagcgtaccgacgcgctggacctggaggagggaggaaacgtctatatcaaggccgacaagcagaagaacggcatcaaggcgaacttctgcatccgccacaacatcgaggacggcggcgtgcagctcgcctaccactaccagcagaacacccccatcggcgacggccccgtgctgctgcccgacaaccactacctgagcgtgcagtccaaactttcgaaagaccccaacgagaagcgcgatcacatggtcctgctggagttcgtgaccgccgccgggatcactttcggcatggacgagctgtacaagggcggtaccggagggagcatggtgagaaagggcgaggagctgttcaccggggtggtgcccatcctggtcgagctggacggcgacgtaaacggccacaagttcagcgtgggcggcgagggtgagggcgatgccaccgttggcaagctgaccctgaagttcatctgcaccaccggcaagctgcccgtgccctggcccaccctcgtgaccaccctgacctacggcgtgcagtgcttcagccgctaccccgaccacatgaagcagcacgacttcttcaagtccgccatgcccgaaggctacatccaggagcgcaccatcttcttcaaggacgacggcaactacaagacccgcgccgaggtgaagttcgagggcgacaccctggtgaaccgcatcgagctgaagggcatcgacttcaaggaggacggcaacatcctggggcacaagctggagtacaacaccggagcagcagcacgctggcgcgggcggcgcatggacattaggttagccaagaccctggtcctgatcctggtggtgttgatcatctgctggggccctctgcttgcaatcatggtgtatgatgtctttgggaagatgaacaagctcattaagacggtgtttgcattctgcaccatgctctgcctgctgaactccaccgtgaaccccatcatctatgctctgaggagtaaggacctgcgacacgctttccggagcatgtttccctcttgtgaaggcactgcgcagcctctggataacagcatgggggactcggactgcctgcacaaacacgcaaacaatgcagccagtgttcacagggccgcagaaagctgcatcaagagcacggtcaagattgccaaggtaaccatgtctgtgtccacagacacgtctgccgaggctctg"
@@ -42,9 +42,9 @@ class Testpcr(unittest.TestCase):
         result0 = self.entry0.check(startr = 10, stopr = 31 , startf = 79, stopf = 60)
         result1 = self.entry1.check()
         self.assertIsInstance(result,tuple)
-        self.assertEqual(result,(None, None, None, None)) 
-        self.assertEqual(result0,(None, None, None, None))
-        self.assertEqual(result1,(None, None, None, None))
+        self.assertEqual(result,None) 
+        self.assertEqual(result0,None)
+        self.assertEqual(result1,None,)
 
     def test_recommend(self):
         result0 = self.entry.recommend(factor="cost")
