@@ -32,8 +32,8 @@ jobs:
     - name: Check Python version
       run: python -V
 
-    - name: Test
+    - name: test
       env:
         PYTHONPATH: .
-      run: python Tests/test_pcrprotocoloptimizer.py
+      run: python tests/test_pcrprotocoloptimizer.py
 
