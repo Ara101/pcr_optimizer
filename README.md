@@ -38,7 +38,7 @@ Any errors will be reported and the user will manually fix them.
 
 ## Optimzing PCR for cost or time: 
 
-The recommend() function will optimize pcr for a user-defined factor (either "time" or "cost") and return a table of outputs. 
+The recommend() function will optimize pcr for a user-defined factor (either "time" or "cost") and return a Dataframe of outputs. 
 
 Optimizing for cost: 
 ```
@@ -83,3 +83,4 @@ Taq Analyzer
 +-----------------------------+------------------------------+
 ````
 If the user does not define a factor, then both tables will be returned for both enzymes. 
+If the user defines factor as "return all" the output will be a tuple of all the optimization results
