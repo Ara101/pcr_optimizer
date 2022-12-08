@@ -100,7 +100,7 @@ class pcr(object):
           
           Returns
           -------
-          A statment on primer compatibility : str
+          A table on primer compatibility : DataFrame
 
           """
           # Preparing inputs 
@@ -168,14 +168,14 @@ class pcr(object):
           elif Primer1 == 1:
             return ("Forward Primer and gene are incompatible. Check forward primer annealing location")   
           elif Primer2 == 1:
-            return ("Reverse Primer and gene are incompatible, Check reverse primer annealing location")
+            return ("Reverse Primer and gene are incompatible. Check reverse primer annealing location")
           else:
             return ("Primers and Gene are compatible!")
 
-        results = [check_gene(self), check_fp(self), check_rp(self), checkPrimerGeneCompatability(self.sequence,self.fp,self.rp)]
-        logging.basicConfig(format='%(message)s', level=logging.INFO, force=True)
+        result = [check_gene(self), check_fp(self), check_rp(self), checkPrimerGeneCompatability(self.sequence,self.fp,self.rp)]
+        results = pd.DataFrame(data = {'Result':result}, index = ["Gene:","Forward primer:","Reverse primer:","Primers & Gene:"] )
 
-        return logging.info("{} \n{} \n{} \n{}".format(results[0], results[1], results[2], results[3]))
+        return results
 
     def countGCcontent(self): 
         """
@@ -187,8 +187,10 @@ class pcr(object):
 
         Returns
         ----------
-        GC content : str
-          The number of each base 
+        Text output: str
+          A statment of the GC content of the string
+        GC content : float
+          The percentage of G's and C's in the sequence 
 
         """
         gene = self.sequence 
@@ -215,13 +217,26 @@ class pcr(object):
       ----------
       a pcr object 
       (contains gene/sequence, forward primer, and reverse primer)
-      factor: a string, either "cost" or "time". If None will return tables for time and cost
+      factor: a string, "cost", "time" or "return all". 
+      If None will return tables for time and cost
+      of all enzymes
 
       Returns: 
       ----------
-      A table on the results of using different enzymes : PrettyTable
+      A table on the costs of using different enzymes : DataFrame
+      A table on the time while using different enzymes : DataFrame
+      A table on the results(cost and time) of using different enzymes : PrettyTable
+      A tuple on all the results of using different enzymes: tuple
+      A statement if recommend function is run with an invalid sequences : str 
           
       """
+      # Stop funtion from running with an invalid entry
+      postive_check = ["Gene looks good!","Forward primer looks good!","Reverse primer looks good!","Primers and Gene are compatible!"]
+      check_df = self.check()
+      for count, cod in enumerate(range(0,len( check_df )-1)):
+        if check_df.iloc[count,0] != postive_check[count] :
+          return "{}. Consider use check function to troubleshoot entire selection".format(check_df.iloc[count,0])
+        else: continue
 
       def iProofAnalyzer(self): 
           """
@@ -271,7 +286,8 @@ class pcr(object):
             enzyme_dict[str(volume) + " uL"].append(0.5*(volume/50)) 
             enzyme_dict[str(volume) + " uL Cost"].append(round(0.5*(volume/50)*enzyme_cost,2))
           enzyme_df_iproof = pd.DataFrame(enzyme_dict)
-          enzyme_df_iproof.index = ['Enzyme amount']
+          enzyme_df_iproof.index = ['iProof volume/cost']
+          enzyme_df_iproof.index.name = 'iProof Analyzer'
           
           #iProof Primer Annealing Temperature
           annealing_temp_1 = mt.Tm_NN(Seq(self.fp))
@@ -294,7 +310,7 @@ class pcr(object):
           total_pcr_time_hours = round (total_pcr_time_minutes/60, 2)
           
           factor = ['Annealing Temperature:','Annealing Time:','Extention Time:','Total PCR reaction time is:' ]
-          stats_data = {'Result': ["{} degrees Celcius".format(annealing_temp_final), "{} seconds or {} minutes".format(annealing_time_seconds, annealing_time_minutes), "{} seconds or {} minutes".format(extension_time_seconds, extension_time_minutes), "{} minutes or {} hours".format(total_pcr_time_minutes, total_pcr_time_hours)]}
+          stats_data = {'iProof Result': ["{} degrees Celcius".format(annealing_temp_final), "{} seconds or {} minutes".format(annealing_time_seconds, annealing_time_minutes), "{} seconds or {} minutes".format(extension_time_seconds, extension_time_minutes), "{} minutes or {} hours".format(total_pcr_time_minutes, total_pcr_time_hours)]}
           stats_iproof = pd.DataFrame(data = stats_data, index = factor)
 
           return enzyme_df_iproof, stats_iproof 
@@ -346,7 +362,8 @@ class pcr(object):
             enzyme_dict[str(volume) + " uL"].append(0.25*(volume/50)) 
             enzyme_dict[str(volume) + " uL Cost"].append(round(0.25*(volume/50)*enzyme_cost,2))
           enzyme_df_taq = pd.DataFrame(enzyme_dict)
-          enzyme_df_taq.index = ['Enzyme amount']
+          enzyme_df_taq.index = ['Taq volume/cost']
+          enzyme_df_taq.index.name = 'Taq Analyzer'
 
           #iProof Primer Annealing Temperature
           annealing_temp_1 = mt.Tm_NN(Seq(self.fp))
@@ -384,7 +401,7 @@ class pcr(object):
           total_pcr_time_hours = round(total_pcr_time_minutes/60, 2)
           
           reaction_factor = ['Annealing Temperature:','Annealing Time:','Extention Time:','Total PCR reaction time is:' ]
-          stats_data = {'Result': ["{} degrees Celcius".format(annealing_temp_final), "{} seconds or {} minutes".format(annealing_time_seconds, annealing_time_minutes), "{} seconds or {} minutes".format(extension_time_seconds, extension_time_minutes), "{} minutes or {} hours".format(total_pcr_time_minutes, total_pcr_time_hours)]}
+          stats_data = {'Taq Result': ["{} degrees Celcius".format(annealing_temp_final), "{} seconds or {} minutes".format(annealing_time_seconds, annealing_time_minutes), "{} seconds or {} minutes".format(extension_time_seconds, extension_time_minutes), "{} minutes or {} hours".format(total_pcr_time_minutes, total_pcr_time_hours)]}
           stats_taq = pd.DataFrame(data = stats_data, index = reaction_factor)
 
           return enzyme_df_taq, stats_taq 
@@ -394,33 +411,19 @@ class pcr(object):
       taq_result = taqAnalyzer(self)
 
       # Formating Output Enzyme Analyzer outputs
-      enzymes = [iproof_result, taq_result]
-      reaction_factor = ['Annealing Temperature:','Annealing Time:','Extention Time:','Total PCR reaction time is:' ]
-      enzyme_dict = {"20 uL": [], "20 uL Cost" : [], "50 uL": [], "50 uL Cost" : [], "100 uL" : [], "100 uL Cost": [], "200 uL" : [], "200 uL Cost" : []}
-      logging.basicConfig(format='%(message)s', level=logging.INFO, force=True)
-
       if factor == "time":
-        for count, enzyme in enumerate(enzymes):
-          time_table = pt()
-          time_table.add_column('Reaction Factor',reaction_factor)
-          time_table.add_column('Result',enzyme[1].iloc[:,0].tolist())
-          if count == 0:
-            logging.info("IProof Analyzer")
-          elif count == 1:
-            logging.info("Taq Analyzer")
-          logging.info(time_table)
+        time_result = pd.concat([iproof_result[1],taq_result[1]], axis=1, ignore_index=False)
+        return time_result
 
-      elif factor == "cost":
-        for count, enzyme in enumerate(enzymes):
-          cost_table = pt(["Reaction Volume"] + list(enzyme_dict.keys()))
-          cost_table.add_row(["enzyme amount/cost"] + list(enzyme[0].iloc[0]))
-          if count == 0:
-            logging.info("IProof Analyzer")
-          elif count == 1:
-            logging.info("Taq Analyzer")
-          logging.info(cost_table)
+      elif factor == "cost": 
+        cost_result = pd.concat([iproof_result[0],taq_result[0]], axis=0, ignore_index=False)
+        return cost_result
 
       elif factor == None: 
+        enzymes = [iproof_result, taq_result]
+        reaction_factor = ['Annealing Temperature:','Annealing Time:','Extention Time:','Total PCR reaction time is:' ]
+        enzyme_dict = {"20 uL": [], "20 uL Cost" : [], "50 uL": [], "50 uL Cost" : [], "100 uL" : [], "100 uL Cost": [], "200 uL" : [], "200 uL Cost" : []}
+        logging.basicConfig(format='%(message)s', level=logging.INFO, force=True)
         for count, enzyme in enumerate(enzymes):
           cost_table = pt(["Reaction Volume"] + list(enzyme_dict.keys()))
           cost_table.add_row(["enzyme amount/cost"] + list(enzyme[0].iloc[0]))
@@ -433,5 +436,7 @@ class pcr(object):
             logging.info("Taq Analyzer")
           logging.info(cost_table)
           logging.info(time_table)
+        return 
 
-      return "Analysis Complete"
+      elif factor == "return all":
+        return iproof_result, taq_result
