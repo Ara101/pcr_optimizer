@@ -41,18 +41,22 @@ class Testpcr(unittest.TestCase):
         result = self.entry.check()
         result0 = self.entry0.check(startr = 10, stopr = 31 , startf = 79, stopf = 60)
         result1 = self.entry1.check()
-        self.assertEqual(result,None) 
-        self.assertEqual(result0,None)
-        self.assertEqual(result1,None)
+        positive_result = ["Gene looks good!","Forward primer looks good!","Reverse primer looks good!","Primers and Gene are compatible!"]
+        negative_result = ["Gene looks good!","Unacceptable character in forward primer. Check sequence","Reverse primer looks good!","Both Primers and gene are incompatible. Check annealing location for both primers"]
+        self.assertIsNotNone(result)
+        self.assertEqual(result.iloc[:,0].tolist(),positive_result) 
+        self.assertEqual(result0.iloc[:,0].tolist(),positive_result)
+        self.assertEqual(result1.iloc[:,0].tolist(),negative_result)
 
     def test_recommend(self):
-        result0 = self.entry.recommend(factor="cost")
-        result = self.entry.recommend(factor="time")
-        self.assertEqual(len(self.entry.recommend()),17)
+        result = self.entry.recommend(factor="cost")
+        result0 = self.entry0.recommend(factor="time")
+        result1 = self.entry1.recommend()
         self.assertIsNotNone(result)
-        self.assertIsInstance(result,str)
-        self.assertIsNotNone(result0)
-        self.assertIsInstance(result0,str)
+        self.assertIsInstance(result1,str)
+        self.assertEqual(result1,"Unacceptable character in forward primer. Check sequence. Consider use check function to troubleshoot entire selection")
+        self.assertEqual(result.iloc[1,:].tolist(),[0.1, 0.18, 0.25, 0.45, 0.5, 0.89, 1.0, 1.78])
+        self.assertEqual(result0.iloc[:,0].tolist(),['56.73 degrees Celcius','30 seconds or 0.5 minutes','1.5 seconds or 0.025 minutes','34.71 minutes or 0.58 hours'])
         
 if __name__ == '__main__':
     unittest.main()
