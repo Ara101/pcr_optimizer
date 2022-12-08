@@ -8,7 +8,7 @@ This tool optimizes the PCR protocol decision making process. First the gene and
 ## Setup 
 
 ```
-pip install pcr_protocol====0.12
+pip install pcr-optimizer==0.12
 pip install biopython
 ```
 
