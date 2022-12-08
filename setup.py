@@ -11,7 +11,7 @@ def doSetup(install_requires):
         version='0.12',
         author=' Lily Torp, K. Lionel Tukei ',
         author_email='ltorp3@uw.edu, ltukei@uw.edu',
-        url='https://github.com/Ara101/PCR_Optimization_class.git',
+        url='https://github.com/Ara101/pcr_optimizer/tree/Version--0.12',
         description='A function for PCR protocal optimization',
         long_description=long_description,
         long_description_content_type='text/markdown',
