@@ -4,6 +4,19 @@ Authors: Lily Torp, K. Lionel Tukei
 """
 
 import unittest 
+import os
+import sys
+
+# Get the current file's directory
+current_dir = os.path.dirname(os.path.abspath(__file__))
+print(current_dir)
+# Get the root directory (assuming your script is two levels deep in the directory structure)
+root_dir = os.path.abspath(os.path.join(current_dir, '..'))
+print(root_dir)
+# Add the root directory to the Python path
+sys.path.append(root_dir)
+
+# Now you can import your module
 from pcr_optimizer.pcrprotocoloptimizer import pcr
 
 
